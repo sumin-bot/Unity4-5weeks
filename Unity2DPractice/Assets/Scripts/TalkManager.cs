@@ -32,7 +32,7 @@ public class TalkManager : MonoBehaviour
         talkData.Add(11 + 1000, new string[] { "너가 루나가 말했던 새로운 마을 주민인가 보군.:0", "그래 안녕, 난 루도야.:1" });
 
         talkData.Add(20 + 2000, new string[] { "루도의 동전?:5", "미안, 나는 보지 못했어.:4" });
-        talkData.Add(20 + 1000, new string[] { "만약 동전을 찾으면 나한테 돌려줄 수 있어?:1" });
+        talkData.Add(20 + 1000, new string[] { "혹시, 만약 동전을 찾으면 나한테 돌려줄 수 있어?:1" });
         talkData.Add(20 + 4000, new string[] { "동전을 얻었다." });
         talkData.Add(21 + 1000, new string[] { "그거 내 동전 아니야? \n고마워.:2" });
 
