@@ -50,7 +50,7 @@ public class TypeEffect : MonoBehaviour
     void Effecting()
     {
         // End Animation
-        if(msgText.text == targetMsg)
+        if (msgText.text == targetMsg)
         {
             EffectEnd();
             return;

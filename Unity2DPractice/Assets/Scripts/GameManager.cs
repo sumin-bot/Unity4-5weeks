@@ -9,8 +9,12 @@ public class GameManager : MonoBehaviour
     public Image portraitImg;
     public Animator portraitAnim;
     public Sprite prevPortrait;
-    public TypeEffect talk;
+    public TypeEffect talk;    
+    public Text questTalk;
+    public Text nameText;
+    public GameObject menuSet;
     public GameObject scanObject;
+    public GameObject player;
     public bool isAction;
     public int talkIndex;
 
@@ -20,7 +24,19 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        Debug.Log(questManager.CheckQuest());
+        GameLoad();
+        questTalk.text = questManager.CheckQuest();
+    }
+    private void Update()
+    {
+        // Sub Menu
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (menuSet.activeSelf)
+                menuSet.SetActive(false);
+            else
+                menuSet.SetActive(true);
+        }
     }
 
     public void Action(GameObject scanObj)
@@ -50,11 +66,11 @@ public class GameManager : MonoBehaviour
         }
 
         // End Talk
-        if(talkData == null)
+        if (talkData == null)
         {
             isAction = false;
             talkIndex = 0;
-            Debug.Log(questManager.CheckQuest(id));
+            questTalk.text = questManager.CheckQuest(id);
             return;
         }
         
@@ -62,6 +78,16 @@ public class GameManager : MonoBehaviour
         if (isNpc)
         {
             talk.SetMsg(talkData.Split(':')[0]);
+            if (id / 1000 == 1)
+            {
+                nameText.text = "루도";
+                nameText.color = new Color(0, 0.5f, 1);
+            }
+            else
+            {
+                nameText.text = "루나";
+                nameText.color = new Color(1, 0, 0.5f);
+            }
 
             // Show Portrait
             portraitImg.sprite = talkManager.GetPortrait(id, int.Parse(talkData.Split(":")[1]));
@@ -77,6 +103,7 @@ public class GameManager : MonoBehaviour
         else
         {
             talk.SetMsg(talkData);
+            nameText.text = ""; 
 
             // Hide Portrait
             portraitImg.color = new Color(1, 1, 1, 0);
@@ -86,5 +113,34 @@ public class GameManager : MonoBehaviour
         // Next Talk
         isAction = true;
         talkIndex++;
+    }
+    public void GameSave()
+    {
+        PlayerPrefs.SetFloat("PlayerX", player.transform.position.x);
+        PlayerPrefs.SetFloat("PlayerY", player.transform.position.y);
+        PlayerPrefs.SetInt("QuestId", questManager.questId);
+        PlayerPrefs.SetInt("QuestActionIndex", questManager.questActionIndex);       
+        PlayerPrefs.Save();
+
+        menuSet.SetActive(false);
+    }
+    public void GameLoad()
+    {
+        if (!PlayerPrefs.HasKey("PlayerX"))
+            return;
+        
+        float x = PlayerPrefs.GetFloat("PlayerX");
+        float y = PlayerPrefs.GetFloat("PlayerY");
+        int questId = PlayerPrefs.GetInt("QuestId");
+        int questActionIndex = PlayerPrefs.GetInt("QuestActionIndex");
+
+        player.transform.position = new Vector3(x, y, 0);
+        questManager.questId = questId;
+        questManager.questActionIndex = questActionIndex;
+        questManager.ControlObject();
+    }
+    public void GameExit()
+    {
+        Application.Quit();
     }
 }
